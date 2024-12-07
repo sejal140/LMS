@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Login</title>
+    <link rel="stylesheet" href="login.css" />
+    <script src="https://www.gstatic.com/firebasejs/9.17.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.17.2/firebase-auth.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <div class="myform">
+        <form id="loginForm" onsubmit="return window.handleLogin(event)">
+          <h2>ADMIN LOGIN</h2>
+          <input type="text" placeholder="Admin Name" id="adminName" required />
+          <input
+            type="password"
+            placeholder="Password"
+            id="adminPassword"
+            required
+          />
+          <button type="submit">LOGIN</button>
+          <p>
+            Don't have an account?
+            <a href="#" onclick="window.showSignUp()">Sign Up</a>
+          </p>
+        </form>
+
+        <form
+          id="signUpForm"
+          style="display: none"
+          onsubmit="return window.handleSignUp(event)"
+        >
+          <h2>ADMIN SIGN UP</h2>
+          <input
+            type="text"
+            placeholder="Admin Name"
+            id="signUpAdminName"
+            required
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            id="signUpAdminPassword"
+            required
+          />
+          <button type="submit">SIGN UP</button>
+          <p>
+            Already have an account?
+            <a href="#" onclick="window.showLogin()">Login</a>
+          </p>
+        </form>
+      </div>
+      <div class="image">
+        <img src="images.jpeg" alt="Admin Image" />
+      </div>
+    </div>
+
+    <script type="module">
+      // Import Firebase and its modules
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-app.js";
+      import {
+        getAuth,
+        createUserWithEmailAndPassword,
+        signInWithEmailAndPassword,
+      } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-auth.js";
+
+      // Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyBgsiaU1hRDJ5-C2SqBufLbHbDB7UX-DSo",
+        authDomain: "e-learning-e3857.firebaseapp.com",
+        projectId: "e-learning-e3857",
+        storageBucket: "e-learning-e3857.firebasestorage.app",
+        messagingSenderId: "1092534482183",
+        appId: "1:1092534482183:web:5882caa4157799ab3f81a2",
+        measurementId: "G-DM44S1P744",
+      };
+
+      // Initialize Firebase app
+      const app = initializeApp(firebaseConfig);
+
+      // Initialize Firebase Auth
+      const auth = getAuth(app);
+
+      // Handle login
+      async function handleLogin(event) {
+        event.preventDefault();
+        const adminName = document.getElementById("adminName").value.trim();
+        const adminPassword = document.getElementById("adminPassword").value;
+
+        // Validate adminName
+        if (!adminName) {
+          alert("Admin name cannot be empty!");
+          return;
+        }
+
+        try {
+          // Append @gmail.com and attempt login
+          await signInWithEmailAndPassword(
+            auth,
+            `${adminName}@gmail.com`,
+            adminPassword
+          );
+          alert("Login successful!");
+          window.location.href = "dashboard.html"; // Redirect to dashboard
+        } catch (error) {
+          alert("Error: " + error.message);
+        }
+      }
+
+      // Handle sign up
+      async function handleSignUp(event) {
+        event.preventDefault();
+        const adminName = document
+          .getElementById("signUpAdminName")
+          .value.trim();
+        const adminPassword = document.getElementById(
+          "signUpAdminPassword"
+        ).value;
+
+        // Validate adminName
+        if (!adminName) {
+          alert("Admin name cannot be empty!");
+          return;
+        }
+
+        try {
+          // Append @gmail.com and attempt sign up
+          await createUserWithEmailAndPassword(
+            auth,
+            `${adminName}@gmail.com`,
+            adminPassword
+          );
+          alert("Sign-up successful! You can now log in.");
+          showLogin();
+        } catch (error) {
+          alert("Error: " + error.message);
+        }
+      }
+
+      // Show login form
+      function showLogin() {
+        document.getElementById("loginForm").style.display = "block";
+        document.getElementById("signUpForm").style.display = "none";
+      }
+
+      // Show sign-up form
+      function showSignUp() {
+        document.getElementById("loginForm").style.display = "none";
+        document.getElementById("signUpForm").style.display = "block";
+      }
+
+      // Attach functions to the global window object
+      window.handleLogin = handleLogin;
+      window.handleSignUp = handleSignUp;
+      window.showLogin = showLogin;
+      window.showSignUp = showSignUp;
+    </script>
+  </body>
+</html>
